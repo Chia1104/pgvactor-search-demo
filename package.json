@@ -1,0 +1,21 @@
+{
+  "name": "pgvactor-search-demo",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "db:up": "docker compose up",
+    "dev": "bun run --watch index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.7.0",
+    "openai": "^4.97.0",
+    "pgvector": "^0.2.0"
+  }
+}
