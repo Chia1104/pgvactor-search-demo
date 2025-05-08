@@ -46,7 +46,7 @@ const searchDb = async (query: string) => {
     throw new Error("Embedding generation failed");
   }
   const sqlEmbedding = pgvector.toSql(embedding);
-  const results = await sql`SELECT * FROM documents ORDER BY embedding <-> ${sqlEmbedding} LIMIT 3`.values();
+  const results = await sql`SELECT * FROM documents ORDER BY embedding <=> ${sqlEmbedding} LIMIT 3`.values();
   return results;
 };
 
