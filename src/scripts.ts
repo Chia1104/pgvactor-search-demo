@@ -40,6 +40,30 @@ const seedDb = async () => {
   console.log("Database seeded successfully");
 };
 
+const seedDbWithCapitals = async () => {
+  const documents = await Promise.all([
+    {
+      title: "Taiwan",
+      content: "The capital of Taiwan is Taipei",
+      embedding: pgvector.toSql(await generateEmbedding("The capital of Taiwan is Taipei")),
+    },
+    {
+      title: "Japan",
+      content: "The capital of Japan is Tokyo",
+      embedding: pgvector.toSql(await generateEmbedding("The capital of Japan is Tokyo")),
+    },
+    {
+      title: "United States",
+      content: "The capital of United States is Washington, D.C.",
+      embedding: pgvector.toSql(await generateEmbedding("The capital of United States is Washington, D.C.")),
+    },
+  ]);
+
+  await sql`INSERT INTO documents ${sql(documents)}`;
+
+  console.log("Database seeded successfully");
+};
+
 const searchDb = async (query: string) => {
   const embedding = await generateEmbedding(query);
   if (!embedding) {
@@ -50,19 +74,29 @@ const searchDb = async (query: string) => {
   return results;
 };
 
-const demo = async (search = "What is the capital of Taiwan?", seed = false) => {
+const demo = async (search = "What is the capital of Taiwan?", seed?: true | "capitals") => {
   await initDb();
   if (seed) {
-    await seedDb();
+    if (seed === "capitals") {
+      await seedDbWithCapitals();
+    } else {
+      await seedDb();
+    }
   }
   const results = await searchDb(search);
   console.log(results);
 };
 
 const Script = {
-  init: async () => {
+  init: async (seed?: true | "capitals") => {
     await initDb();
-    await seedDb();
+    if (seed) {
+      if (seed === "capitals") {
+        await seedDbWithCapitals();
+      } else {
+        await seedDb();
+      }
+    }
   },
   initDb,
   seedDb,
